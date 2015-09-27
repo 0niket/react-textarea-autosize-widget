@@ -1,8 +1,8 @@
 /**
- * JS for textarea autosize widget
- * @author Aniket Hendre <aniket@helpshift.com>
- * @created June 22, 2015
- * @module widget/textareaAutosize
+ * Textarea autosize widget
+ * @author Aniket Hendre <hendre.ani@gmail.com>
+ * @created Sep 27, 2015
+ * @module textareaAutosize
  */
 
 define ("textareaAutosize", function () {
