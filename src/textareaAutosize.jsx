@@ -2,7 +2,7 @@
  * Textarea autosize widget
  * @author Aniket Hendre <hendre.ani@gmail.com>
  * @created Sep 27, 2015
- * @module textareaAutosize
+ * @module src/textareaAutosize
  */
 
 define ("textareaAutosize", function () {
