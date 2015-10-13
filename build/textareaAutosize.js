@@ -5,13 +5,16 @@
  * @module widget/textareaAutosize
  */
 
-define (["libs/react-with-addons"], function (React) {
-  "use strict";
+"use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+define(["libs/react-with-addons"], function (React) {
+  "use strict";
 
   var PureRenderMixin = React.addons.PureRenderMixin;
 
-  return React.createClass ({
+  return React.createClass({
 
     displayName: "TextareaAutosize",
 
@@ -39,27 +42,28 @@ define (["libs/react-with-addons"], function (React) {
       style: React.PropTypes.object
     },
 
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
       return {
-        minRows : 1,
-        maxRows : Infinity
+        minRows: 1,
+        maxRows: Infinity
       };
     },
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
       return {
-        height    : null,
-        overflowY : "auto"
+        height: null,
+        overflowY: "auto"
       };
     },
 
-    render: function () {
-      var taProps = {}, key;
+    render: function render() {
+      var taProps = {},
+          key;
 
       // Clone all props
       for (key in this.props) {
-        if (this.props.hasOwnProperty (key)) {
-          taProps [key] = this.props [key];
+        if (this.props.hasOwnProperty(key)) {
+          taProps[key] = this.props[key];
         }
       }
 
@@ -79,11 +83,9 @@ define (["libs/react-with-addons"], function (React) {
         taProps.rows = this.props.minRows;
       }
 
-      return (
-        <textarea {...taProps}
-                  onChange={this._handleChange}
-                  ref="ta" />
-      );
+      return React.createElement("textarea", _extends({}, taProps, {
+        onChange: this._handleChange,
+        ref: "ta" }));
     },
 
     _minHt: null, // Derived from minRows.
@@ -93,23 +95,22 @@ define (["libs/react-with-addons"], function (React) {
     /**
      * on change event execute resize and also execute specified onChange event.
      */
-    _handleChange: function (ev) {
+    _handleChange: function _handleChange(ev) {
       if (this.props.onChange) {
-        this.props.onChange (ev);
+        this.props.onChange(ev);
       }
 
       // Call autoresize only if component is uncontrolled.
       if (typeof this.props.value === "undefined") {
-        this._autoResize ();
+        this._autoResize();
       }
     },
-
 
     /**
      * Change height of textarea depending on content size.
      */
-    _autoResize: function () {
-      var node = React.findDOMNode (this.refs.ta);
+    _autoResize: function _autoResize() {
+      var node = React.findDOMNode(this.refs.ta);
       var clientHt = node.clientHeight;
       var scrollHt = node.scrollHeight;
       var height, overflowY;
@@ -120,30 +121,30 @@ define (["libs/react-with-addons"], function (React) {
         if (scrollHt > this._minHt && scrollHt <= clientHt) {
           // if scroll height is less than client height but greater than minimum height
           // then decrease height
-          this._updateNodeStyle (0, overflowY, function () {
+          this._updateNodeStyle(0, overflowY, (function () {
             scrollHt = node.scrollHeight;
             height = scrollHt > this._minHt ? scrollHt : this._minHt;
-            this._updateNodeStyle (height, overflowY);
-          }.bind (this));
+            this._updateNodeStyle(height, overflowY);
+          }).bind(this));
         } else if (scrollHt > clientHt) {
           // if scroll height is greater than client height then increase the client height.
           height = scrollHt;
-          this._updateNodeStyle (height, overflowY);
+          this._updateNodeStyle(height, overflowY);
         }
       } else {
         // if scroll height is greater than max height then textarea should have scroll.
         // and set textarea's height to max height.
         height = this._maxHt;
         overflowY = "scroll";
-        this._updateNodeStyle (height, overflowY);
+        this._updateNodeStyle(height, overflowY);
       }
     },
 
     /**
      * Update height & overflow-y of node. And if present call callback.
      */
-    _updateNodeStyle: function (height, overflowY, callback) {
-      this.setState ({
+    _updateNodeStyle: function _updateNodeStyle(height, overflowY, callback) {
+      this.setState({
         height: height,
         overflowY: overflowY
       }, callback);
@@ -152,10 +153,10 @@ define (["libs/react-with-addons"], function (React) {
     /**
      * call autoresize only if component is controlled and value is changed.
      */
-    componentDidUpdate: function(prevProps) {
-      var node = React.findDOMNode (this.refs.ta);
+    componentDidUpdate: function componentDidUpdate(prevProps) {
+      var node = React.findDOMNode(this.refs.ta);
       if (typeof this.props.value !== "undefined" && this.props.value !== prevProps.value) {
-        this._autoResize ();
+        this._autoResize();
       }
 
       /**
@@ -166,35 +167,35 @@ define (["libs/react-with-addons"], function (React) {
        */
       if (this._prevOffsetHeight >= this._minHt && node.offsetHeight >= this._minHt) {
         if (this._prevOffsetHeight !== node.offsetHeight && this.props.onHeightChange) {
-          this.props.onHeightChange ();
+          this.props.onHeightChange();
         }
         this._prevOffsetHeight = node.offsetHeight;
       }
     },
 
-    componentDidMount: function () {
+    componentDidMount: function componentDidMount() {
       var rowHt, node, padding, computedStyle;
 
       // Find dom node by reference.
-      node = React.findDOMNode (this.refs.ta);
+      node = React.findDOMNode(this.refs.ta);
 
       // Get padding of textarea element.
-      computedStyle = window.getComputedStyle (node, null);
-      padding = parseFloat (computedStyle.getPropertyValue ("padding-top"));
-      padding += parseFloat (computedStyle.getPropertyValue ("padding-bottom"));
+      computedStyle = window.getComputedStyle(node, null);
+      padding = parseFloat(computedStyle.getPropertyValue("padding-top"));
+      padding += parseFloat(computedStyle.getPropertyValue("padding-bottom"));
 
       // row height is client height minus top & bottom padding divided by min rows.
-      rowHt = ((node.clientHeight - padding) / this.props.minRows);
+      rowHt = (node.clientHeight - padding) / this.props.minRows;
 
       // minimum height of textarea is offsetHeight of textarea element.
       this._minHt = node.offsetHeight;
 
       // maximum height of textarea is height of single row into given maxRows + padding.
-      this._maxHt = (rowHt * this.props.maxRows) + padding;
+      this._maxHt = rowHt * this.props.maxRows + padding;
 
       // Initial value of textarea is greater than min rows.
       if (node.scrollHeight > node.clientHeight) {
-        this._autoResize ();
+        this._autoResize();
       }
 
       // Get initial client height. This is used to call onHeightChange event.
